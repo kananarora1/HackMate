@@ -1,7 +1,13 @@
 import { supabase } from '../lib/supabase';
 import type { Event } from '../types/database';
 
-export async function getAllEvents(): Promise<Event[]> {
+export type EventFilters = {
+  city?: string;
+  tags?: string[];
+  search?: string;
+};
+
+export async function getAllEvents(_filters: EventFilters = {}): Promise<Event[]> {
   const { data, error } = await supabase
     .from('events')
     .select('*')
