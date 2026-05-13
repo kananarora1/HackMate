@@ -1,21 +1,15 @@
-import { StyleSheet } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import FeedScreen from './src/screens/FeedScreen';
-import { colors } from './src/constants/colors';
+import { StatusBar } from 'expo-status-bar';
+import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import RootNavigator from './src/navigation/RootNavigator';
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.root} edges={['top', 'left', 'right']}>
-        <FeedScreen />
-      </SafeAreaView>
+      <NavigationContainer>
+        <RootNavigator />
+        <StatusBar style="dark" />
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-});

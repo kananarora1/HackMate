@@ -3,9 +3,8 @@ import type { Event } from '../types/database';
 
 export type EventFilters = {
   search?: string;       // ilike on title | organizer | description
-  tags?: string[];        // OR logic via postgres array overlap
+  tags?: string[];       // OR logic via postgres array overlap
   mode?: 'all' | 'online' | 'offline';
-  includePast?: boolean;  // default false → exclude end_date < now
 };
 
 function escapeSqlWildcards(term: string): string {
@@ -36,11 +35,9 @@ export async function getAllEvents(filters: EventFilters = {}): Promise<Event[]>
   } else if (filters.mode === 'offline') {
     query = query.eq('is_online', false);
   }
-
-  // ── Exclude past events ────────────────────────────────────────────────
-  if (!filters.includePast) {
-    query = query.or(`end_date.gte.${new Date().toISOString()},end_date.is.null`);
-  }
+  // ── Hide past events (end_date < now) ──────────────────────────────────
+  // Events with no end_date are treated as ongoing and always shown.
+  query = query.or(`end_date.gte.${new Date().toISOString()},end_date.is.null`);
 
   // ── Order ──────────────────────────────────────────────────────────────
   query = query.order('start_date', { ascending: true, nullsFirst: false });
